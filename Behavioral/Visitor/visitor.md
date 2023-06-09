@@ -7,4 +7,6 @@ hierarchy, then you use that single method to add additional functionality, whet
 traversal or just something else, some sort of order processing of a set of related types.
 
 
-1. Intrusive Visitor Pattern
+1. Intrusive Visitor
+2. Reflective Visitor
+3. 
