@@ -65,6 +65,7 @@ func (a *AdditionExpression) Accept(ev ExpressionVisitor) {
 	ev.VisitAdditionExpression(a)
 }
 
+// ------------------------------------------
 type ExpressionPrinter struct { // This is visitor, and its job is to visit and Print i.e. a functionality ; like thus for any other functionality create a new visitor e.g. Evaluate
 	sb strings.Builder
 }
@@ -89,6 +90,28 @@ func (ep *ExpressionPrinter) String() string {
 	return ep.sb.String()
 }
 
+//------------------------------------
+type ExpressionEvaluator struct {
+	result float64
+}
+
+func (e *ExpressionEvaluator) VisitDoubleExpression(d *DoubleExpression) {
+	e.result = d.value
+}
+
+func (e *ExpressionEvaluator) VisitAdditionExpression(a *AdditionExpression) {
+	result := 0.0
+	a.left.Accept(e)
+	result += e.result // Pass the visitor to Accept
+	a.right.Accept(e)
+	result = result + e.result
+	e.result = result
+}
+
+func NewExpressionEvaluator() *ExpressionEvaluator {
+	return &ExpressionEvaluator{result: 0.0}
+}
+
 func main() {
 	e := &AdditionExpression{
 		left: &AdditionExpression{
@@ -101,4 +124,8 @@ func main() {
 	ep := NewExpressionPrinter()
 	e.Accept(ep)
 	fmt.Println(ep.String())
+
+	ee := NewExpressionEvaluator()
+	e.Accept(ee)
+	fmt.Println(ee.result)
 }
