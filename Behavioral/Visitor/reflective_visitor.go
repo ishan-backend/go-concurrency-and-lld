@@ -17,6 +17,7 @@ type AdditionExpression struct {
 }
 
 // Print takes an expression and prints it to sb
+// Separation of concerns
 func Print(e Expression, sb *strings.Builder) {
 	if de, ok := e.(*DoubleExpression); ok {
 		sb.WriteString(fmt.Sprintf("%g", de.value))
@@ -27,6 +28,9 @@ func Print(e Expression, sb *strings.Builder) {
 		Print(ae.right, sb)
 		sb.WriteRune(')')
 	}
+
+	// Problematic: If a new type is added, you have to add a new code here to handle that type
+	// We are breaking open-closed principle / OCP. We don't want to touch existing code that is tested.
 }
 
 func main() {

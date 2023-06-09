@@ -9,4 +9,10 @@ traversal or just something else, some sort of order processing of a set of rela
 
 1. Intrusive Visitor
 2. Reflective Visitor
-3. 
+
+- Dispatch: answers which function to call. This decision is taken at compile time. 
+  - Single Dispatch: name of request, type of receiver
+  - Double Dispatch: name of request, type of two receivers (type of visitor, type of element being visited)
+- Dispatch = figuring out which method to call. In some cases, its easy, in others, it's impossible.
+- Function overloading is not allowed in Go.
+3. Classic Visitor - in real world solution.
