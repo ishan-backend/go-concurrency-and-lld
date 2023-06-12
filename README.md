@@ -11,11 +11,11 @@
 * Facade: One-Stop-Shop - Represents a whole system with a single, simplified interface.
 * Flyweight: Space Saver - Shares small, reusable items efficiently.
 * Proxy: Stand-In Actor - Represents another object, controlling access or actions.
-* Chain of Responsibility: Request Relay - Passes a request through a chain of objects until handled.
+* 🅱️ Chain of Responsibility: Request Relay - Passes a request through a chain of objects until handled.
 * Command: Task Wrapper - Turns a request into an object, ready for action.
 * Iterator: Collection Explorer - Accesses elements in a collection one by one.
 * Mediator: Communication Hub - Simplifies interactions between different classes.
 * Memento: Time Capsule - Captures and restores an object's state.
-* Observer: News Broadcaster - Notifies classes about changes in other objects.
-* Visitor: Skillful Guest - Adds new operations to a class without altering it.
+* 🅱️ Observer: News Broadcaster - Notifies classes about changes in other objects.
+* 🅱️ Visitor: Skillful Guest - Adds new operations to a class without altering it.
 
