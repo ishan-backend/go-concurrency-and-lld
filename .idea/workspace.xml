@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4b332ee3-fdb5-4587-8adb-9d0f84cf39c0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/design_patterns/design_patterns.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/0. Singleton/singleton.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1. Observer/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/observer/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1. Observer/observer.md" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/observer/observer.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Behavioural/Chain-Of-Responsibility/method_chain.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/chain-of-responsibility/method_chain.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Behavioural/Visitor/classic_visitor.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/visitor/classic_visitor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Behavioural/Visitor/intrusive_visitor.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/visitor/intrusive_visitor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Behavioural/Visitor/reflective_visitor.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/visitor/reflective_visitor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Behavioural/Visitor/visitor.md" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/behavioral/visitor/visitor.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Factory/factory.md" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/factory/factory.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Factory/factory_generator.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/factory/factory_generator.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Factory/interface_factory.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/factory/interface_factory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Prototype/copy_through_serialization.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/prototype/copy_through_serialization.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Prototype/deep_copy.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/prototype/deep_copy.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Prototype/prototype.md" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/prototype/prototype.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Creational/Prototype/prototype_factory.go" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/go/creational/prototype/prototype_factory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOLID/solid.md" beforeDir="false" afterPath="$PROJECT_DIR$/design_patterns/solid_principles/solid.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/.idea/project-template.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/Sample.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/out/production/Sample/com/company/Abc.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/out/production/Sample/com/company/Channel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/out/production/Sample/com/company/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/out/production/Sample/com/company/Subscriber.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/src/com/company/Channel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/src/com/company/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sample/src/com/company/Subscriber.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2UPyjhMP57kVS8dpRApgTzR4d9X" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.format.on.save.advertiser.fired" value="true" />
+    <property name="go.formatter.settings.were.checked" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/design_patterns/go/creational" />
+      <recent name="$PROJECT_DIR$/design_patterns/go/behavioral" />
+      <recent name="$PROJECT_DIR$/design_patterns" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

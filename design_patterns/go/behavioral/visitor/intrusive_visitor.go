@@ -41,7 +41,7 @@ func main() {
 		right: &DoubleExpression{value: 3},
 	}
 
-	// Intrusion Visitor violates open-closed principle, as Expression interface originally defined empty interface, needs a method Print() to be added
+	// Intrusion visitor violates open-closed principle, as Expression interface originally defined empty interface, needs a method Print() to be added
 	// for Printing the expression required from given hierarchy
 	sb := strings.Builder{}
 	e.Print(&sb)

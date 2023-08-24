@@ -32,7 +32,7 @@ func (e *EmployeeFactory) Create(name string) *Employee {
 func main() {
 	// Functional approach
 	/*
-		// Factory functions
+		// factory functions
 		sde1Factory := NewEmployeeFactory("Developer", 2400000)
 		emFactory := NewEmployeeFactory("EM", 10000000)
 

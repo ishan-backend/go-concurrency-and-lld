@@ -67,7 +67,7 @@ func newAuxOfficeEmployee(name string, flatNo int) *Employee {
 	return newEmployee(&auxOfficeEmployeePrototype, name, flatNo)
 }
 
-// Prototype Factory is merely a conveinence approach
+// prototype factory is merely a conveinence approach
 func main() {
 	john := newMainOfficeEmployee("John", 1)
 	jane := newAuxOfficeEmployee("Jane", 2)
