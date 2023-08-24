@@ -1,5 +1,15 @@
 # Design Patterns
 
+**Structural**
+* *Adapter Pattern* :- Getting the interface you want from the interface you have.
+****
+**Behavioural**
+* *Chain of Responsibility* :- Request Relay - Passes a request through a chain of objects until handled.
+* 
+****
+
+**Creational**
+****
 * Abstract Factory: Family Creator - Makes groups of related items.
 * Builder: Lego Master - Builds objects step by step, keeping creation and appearance separate.
 * Prototype: Clone Maker - Creates copies of fully prepared examples.
@@ -11,7 +21,7 @@
 * Facade: One-Stop-Shop - Represents a whole system with a single, simplified interface.
 * Flyweight: Space Saver - Shares small, reusable items efficiently.
 * Proxy: Stand-In Actor - Represents another object, controlling access or actions.
-* 🅱️ Chain of Responsibility: Request Relay - Passes a request through a chain of objects until handled.
+* 🅱️ 
 * Command: Task Wrapper - Turns a request into an object, ready for action.
 * Iterator: Collection Explorer - Accesses elements in a collection one by one.
 * Mediator: Communication Hub - Simplifies interactions between different classes.
