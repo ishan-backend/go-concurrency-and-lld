@@ -1,6 +1,8 @@
 # Design Patterns README
 
 Welcome to the Design Patterns README, where we explore various design patterns categorized into Creational, Structural, and Behavioral patterns. These patterns are fundamental concepts in software engineering that help solve common design problems in elegant and efficient ways.
+https://www.youtube.com/watch?v=OuNOyFg942M
+https://www.youtube.com/watch?v=WxGtmIBZszk
 
 ## Creational Patterns
 

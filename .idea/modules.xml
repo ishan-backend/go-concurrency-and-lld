@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../database-internals/.idea/database-internals.iml" filepath="$PROJECT_DIR$/../database-internals/.idea/database-internals.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/design-patterns.iml" filepath="$PROJECT_DIR$/.idea/design-patterns.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../low-level-design/.idea/low-level-design.iml" filepath="$PROJECT_DIR$/../low-level-design/.idea/low-level-design.iml" />
     </modules>
   </component>
 </project>

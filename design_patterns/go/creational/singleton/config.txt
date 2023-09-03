@@ -1,0 +1,4 @@
+dbName
+postgres
+dbPass
+123456
