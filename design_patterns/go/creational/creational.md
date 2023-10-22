@@ -1,4 +1,4 @@
-**Factory**
+**1. Factory (Simple & Abstract)**
 * https://refactoring.guru/design-patterns/factory-method
 * https://refactoring.guru/design-patterns/factory-method/go/example
 * https://refactoring.guru/design-patterns/factory-comparison
@@ -23,4 +23,5 @@
 
  - Abstract Factories, Builders and Prototypes can all be implemented as Singletons.
 
-
+**2. Builder**
+* 
