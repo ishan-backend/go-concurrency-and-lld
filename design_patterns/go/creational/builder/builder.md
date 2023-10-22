@@ -37,5 +37,15 @@ func main() {
 * So lets put it into structures and methods which are more handy to use.
 
 
+**There are situations where you might need more than one builder**:
+* **multiple_builders.go**
+* We can have multiple domains of information being populated by different builders for the same entity
+* As soon as we aggregate these builders, we get our entity
+
+**How to hide the objects which we don't want our end user to mess with**:
+* e.g. API of some kind to send emails
+* we want our end user to work with EmailBuilder and not email object -> provide a function that takes a builder and calls something on it
+* 
+
 
 
