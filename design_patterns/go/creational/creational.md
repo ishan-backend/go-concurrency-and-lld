@@ -23,5 +23,14 @@
 
  - Abstract Factories, Builders and Prototypes can all be implemented as Singletons.
 
-**2. Builder**
-* 
+**2. Builder**:
+
+
+**5. Object Pool**:
+* https://nuculabs.dev/p/object-pool-pattern
+* https://pkg.go.dev/sync#Pool
+* used in situations when constructing objects is a costly operation, for example building an HTTPClient or DatabaseClient object can take some time.
+* By having a pool of resources, the resources are requested from the pool when needed and then returned when not needed so they can be reused later.
+* you'll just grab an instance instead of constructing it again from scratch.
+* In Go we have sync.pool which implements the Object Pool pattern for us, we just need to give it a New function that returns a pointer.
+* To track how many active instances, we have of the object Resource, we use the counter variable.
