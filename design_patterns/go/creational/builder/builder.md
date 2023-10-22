@@ -43,9 +43,12 @@ func main() {
 * As soon as we aggregate these builders, we get our entity
 
 **How to hide the objects which we don't want our end user to mess with**:
-* e.g. API of some kind to send emails
+* e.g. API of some kind to send emails - **hide_objects.go**
 * we want our end user to work with EmailBuilder and not email object -> provide a function that takes a builder and calls something on it
-* 
+
+**One way to extend an existing builder is using Functional Programming approach**:
+* with this approach you dont have to aggregate a group of builders
+* you can easily extend it with new methods which return Builder Pointer and append it to actions.
 
 
 
