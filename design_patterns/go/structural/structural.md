@@ -34,4 +34,13 @@ https://refactoring.guru/design-patterns/structural-patterns
     * On coloredShape over circle, we cannot get Resize() is not available, since we did not aggregate it
     * We cannot add Resize() to interface because other shapes might not support resize
   * Decorators can be composed i.e. decorators on top of decorators
+
+**5. Proxy**:
+* it functions as interface for accessing a particular resource. this resource may be expensive to make, remote, may require logging or some other functionality. 
+* Same interface, entirely different behaviour
+* What if you want to change implementation later point in time? Can you avoid changing your code/contract?
+* https://refactoring.guru/design-patterns/proxy
+  * Protection Proxy: tries to perform access control
+  * Virtual Proxy: kind of proxy that pretends it is there when actually it is not
+
   
