@@ -26,7 +26,14 @@ https://refactoring.guru/design-patterns/behavioral-patterns
 2. **Chain Of Responsibility**
     * 
 3. **Strategy**
-   *
-4. **Mediator**:
-   *
+   * Many algorithms can be broken down into high level and low level parts
+   * High level algorithms can be reused for different purposes. Low level parts are specific to different use-case.
+   * Tea:
+     * Pour water, boil water, add milk, add sugar - High level - skeleton
+     * Pour teabag - for tea - beverage specific strategy
+     * Pour coffee - for coffee - beverage specific strategy
+   * So, Strategy = divide an algorithm to its 'skeleton' and its concrete implementation steps which can be varied/switched at runtime.
+   
+4. **Mediator**: [Todo]
+
 
