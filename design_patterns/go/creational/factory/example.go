@@ -79,7 +79,7 @@ func createGun(gunType string) (IGun, error) {
 }
 
 /*
-	main.go
+	general_construct_to_support_notification.go
 */
 func main() {
 	ak47, _ := createGun("ak47")

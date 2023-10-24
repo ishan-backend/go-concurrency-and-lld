@@ -1,13 +1,12 @@
-package main
+package main // main
 
 import (
 	"container/list"
 	"fmt"
 )
 
-// Observable will have a list of subscribers/observers
 type Observable struct {
-	subs *list.List
+	subs *list.List // list of subscribers - which want to listen to events happening on Observable
 }
 
 func (o *Observable) Subscribe(x Observer) {
@@ -42,12 +41,14 @@ type Observer interface {
 type Person struct {
 	Observable
 	Name string
+	Age  int
 }
 
-func AddPerson(name string) Person {
+func AddPerson(name string, age int) Person {
 	return Person{
 		Observable: Observable{new(list.List)},
 		Name:       name,
+		Age:        age,
 	}
 }
 
@@ -62,10 +63,10 @@ func (d *DoctorService) Notify(data interface{}) {
 	fmt.Printf("A doctor has been called for %s", data.(string))
 }
 
-func main() {
-	p := AddPerson("Jon Snow")
-	ds := &DoctorService{}
-	p.Subscribe(ds)
-
-	p.BecomeSick()
-}
+//func main() {
+//	p := AddPerson("Jon Snow", 18)
+//	ds := &DoctorService{}
+//	p.Subscribe(ds)
+//
+//	p.BecomeSick()
+//}
