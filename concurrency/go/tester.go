@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./patterns/confinement"
+	"./patterns/cancellation"
 	"runtime"
 )
 
@@ -12,7 +12,12 @@ func main() {
 	//_buffered_channel.TestChannelOwner()
 	//_select.TestSelect()
 
-	// concurrency patterns
-	_confinement.TestAdhoc()
-	_confinement.TestLexical1()
+	/*
+		Concurrency patterns
+	*/
+	//_confinement.TestAdhoc()
+	//_confinement.TestLexical1()
+
+	_cancellation.TestCancellation()
+
 }
