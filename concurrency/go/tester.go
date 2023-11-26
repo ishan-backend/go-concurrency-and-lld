@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./select"
+	"./patterns/confinement"
 	"runtime"
 )
 
@@ -10,5 +10,9 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	//_buffered_channel.TestChannelOwner()
-	_select.TestSelect()
+	//_select.TestSelect()
+
+	// concurrency patterns
+	_confinement.TestAdhoc()
+	_confinement.TestLexical1()
 }
