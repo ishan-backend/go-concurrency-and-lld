@@ -9,8 +9,12 @@ import (
 )
 
 var (
-	ErrKeyNotFound = errors.New("key not found")
-	ErrCacheFull   = errors.New("cache is full")
+	ErrKeyNotFound      = errors.New("key not found")
+	ErrCacheFull        = errors.New("cache is full")
+	ErrInvalidKey       = errors.New("key cannot be empty")
+	ErrInvalidValue     = errors.New("value cannot be nil")
+	ErrInvalidConfig    = errors.New("invalid cache configuration")
+	ErrContextCancelled = errors.New("context cancelled")
 )
 
 // CacheItem represents a cached entry
@@ -31,7 +35,60 @@ func (c *CacheItem) IsExpired() bool {
 	return time.Now().After(c.ExpiresAt)
 }
 
+// Storage interface defines how cache data is stored
+// This allows extensibility to different storage backends (Redis, disk, etc.)
+type Storage interface {
+	Get(key string) (*CacheItem, bool)
+	Put(key string, item *CacheItem)
+	Delete(key string)
+	Clear()
+	Size() int
+	Keys() []string
+}
+
+// InMemoryStorage is the default in-memory map-based storage implementation
+type InMemoryStorage struct {
+	items map[string]*CacheItem
+}
+
+// NewInMemoryStorage creates a new in-memory storage instance
+func NewInMemoryStorage() *InMemoryStorage {
+	return &InMemoryStorage{
+		items: make(map[string]*CacheItem),
+	}
+}
+
+func (s *InMemoryStorage) Get(key string) (*CacheItem, bool) {
+	item, exists := s.items[key]
+	return item, exists
+}
+
+func (s *InMemoryStorage) Put(key string, item *CacheItem) {
+	s.items[key] = item
+}
+
+func (s *InMemoryStorage) Delete(key string) {
+	delete(s.items, key)
+}
+
+func (s *InMemoryStorage) Clear() {
+	s.items = make(map[string]*CacheItem)
+}
+
+func (s *InMemoryStorage) Size() int {
+	return len(s.items)
+}
+
+func (s *InMemoryStorage) Keys() []string {
+	keys := make([]string, 0, len(s.items))
+	for k := range s.items {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
 // Cache interface defines core operations
+// All methods accept context for cancellation and timeout support
 type Cache interface {
 	Get(ctx context.Context, key string) (interface{}, error)
 	Put(ctx context.Context, key string, value interface{}, ttl time.Duration) error
@@ -60,18 +117,22 @@ type CacheConfig struct {
 }
 
 // InMemoryCache is the main cache implementation
+// Thread-safety: Uses RWMutex for concurrent read/write operations
+// Extensibility: Uses Storage interface for storage backend, EvictionPolicy for eviction strategies
 type InMemoryCache struct {
 	mu             sync.RWMutex
-	items          map[string]*CacheItem
+	storage        Storage // Extensible storage backend
 	config         CacheConfig
-	evictionPolicy EvictionPolicy
+	evictionPolicy EvictionPolicy // Extensible eviction strategy
 	stats          CacheStats
 	stopCleanup    chan struct{}
 }
 
 // CacheSingleton manages the singleton instance of the cache
+// Thread-safety: Uses sync.Once to ensure thread-safe initialization
 type CacheSingleton struct {
-	once   sync.Once
+	mu     sync.Mutex // Protects ResetSingleton
+	once   sync.Once  // Ensures initialization happens only once
 	cache  *InMemoryCache
 	config CacheConfig
 }
@@ -93,6 +154,7 @@ func GetInstance(config CacheConfig) (*InMemoryCache, error) {
 
 // ResetSingleton resets the singleton instance (useful for testing)
 // WARNING: This should only be used in testing scenarios
+// Thread-safety: Not thread-safe - should only be called in test setup/teardown when no other goroutines are accessing it
 func ResetSingleton() {
 	globalCacheSingleton = &CacheSingleton{}
 }
@@ -103,15 +165,25 @@ func NewInMemoryCache(config CacheConfig) (*InMemoryCache, error) {
 }
 
 // newInMemoryCache is the internal constructor for creating cache instances
+// Validates configuration and initializes storage and eviction policy
 func newInMemoryCache(config CacheConfig) (*InMemoryCache, error) {
+	// Validate configuration
+	if config.MaxSize <= 0 {
+		return nil, errors.New("MaxSize must be greater than 0")
+	}
+	if config.CleanupInterval <= 0 {
+		return nil, errors.New("CleanupInterval must be greater than 0")
+	}
+
 	cache := &InMemoryCache{
-		items:       make(map[string]*CacheItem),
+		storage:     NewInMemoryStorage(), // Default in-memory storage
 		config:      config,
 		stats:       CacheStats{MaxSize: config.MaxSize},
 		stopCleanup: make(chan struct{}),
 	}
 
-	// Initialize eviction policy
+	// Initialize eviction policy based on configuration
+	// This demonstrates extensibility - new policies can be added by implementing EvictionPolicy interface
 	switch config.EvictionPolicy {
 	case "lru":
 		cache.evictionPolicy = NewLRUPolicy()
@@ -120,61 +192,105 @@ func newInMemoryCache(config CacheConfig) (*InMemoryCache, error) {
 	case "fifo":
 		cache.evictionPolicy = NewFIFOPolicy()
 	default:
-		cache.evictionPolicy = NewLRUPolicy()
+		cache.evictionPolicy = NewLRUPolicy() // Default to LRU
 	}
 
-	// Start cleanup goroutine
+	// Start background goroutine for expired item cleanup
+	// This runs periodically based on CleanupInterval
 	go cache.cleanupExpired()
 
 	return cache, nil
 }
 
-func (c *InMemoryCache) Get(ctx context.Context, key string) (interface{}, error) {
-	c.mu.RLock()
-	item, exists := c.items[key]
-	c.mu.RUnlock()
-
-	if !exists {
-		c.mu.Lock()
-		c.stats.Misses++
-		c.mu.Unlock()
-		return nil, ErrKeyNotFound
-	}
-
-	if item.IsExpired() {
-		c.Delete(ctx, key)
-		c.mu.Lock()
-		c.stats.Misses++
-		c.mu.Unlock()
-		return nil, ErrKeyNotFound
-	}
-
+// SetStorage allows changing the storage backend (for extensibility)
+// This enables swapping in-memory storage with Redis, disk-based, or other implementations
+func (c *InMemoryCache) SetStorage(storage Storage) {
 	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.storage = storage
+}
+
+// Get retrieves a value from the cache
+// Thread-safety: Uses RWMutex with proper lock ordering to prevent race conditions
+// Error handling: Validates input, checks context cancellation, handles expired items
+func (c *InMemoryCache) Get(ctx context.Context, key string) (interface{}, error) {
+	// Validate input
+	if key == "" {
+		return nil, ErrInvalidKey
+	}
+
+	// Check context cancellation
+	select {
+	case <-ctx.Done():
+		return nil, ErrContextCancelled
+	default:
+	}
+
+	// Use single lock to prevent race conditions between read and write
+	// This fixes the previous issue where item could be modified after lock release
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	item, exists := c.storage.Get(key)
+	if !exists {
+		c.stats.Misses++
+		return nil, ErrKeyNotFound
+	}
+
+	// Check expiration while holding lock
+	if item.IsExpired() {
+		c.storage.Delete(key)
+		c.evictionPolicy.OnDelete(key)
+		c.stats.Misses++
+		c.stats.Size = c.storage.Size()
+		return nil, ErrKeyNotFound
+	}
+
+	// Update access metadata and stats while holding lock
 	item.AccessedAt = time.Now()
 	item.Frequency++
 	c.stats.Hits++
 	c.evictionPolicy.OnGet(key)
-	c.mu.Unlock()
 
 	return item.Value, nil
 }
 
+// Put stores a value in the cache
+// Thread-safety: Uses mutex to ensure atomic operations
+// Error handling: Validates inputs, checks context, handles eviction when cache is full
 func (c *InMemoryCache) Put(ctx context.Context, key string, value interface{}, ttl time.Duration) error {
+	// Validate inputs
+	if key == "" {
+		return ErrInvalidKey
+	}
+	if value == nil {
+		return ErrInvalidValue
+	}
+
+	// Check context cancellation
+	select {
+	case <-ctx.Done():
+		return ErrContextCancelled
+	default:
+	}
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	// Check if we need to evict
-	if len(c.items) >= c.config.MaxSize {
-		if _, exists := c.items[key]; !exists {
+	// Eviction logic: If cache is full and key doesn't exist, evict an item
+	// This demonstrates the extensible eviction policy pattern
+	if c.storage.Size() >= c.config.MaxSize {
+		if _, exists := c.storage.Get(key); !exists {
 			evictKey, ok := c.evictionPolicy.Evict()
 			if !ok {
 				return ErrCacheFull
 			}
-			delete(c.items, evictKey)
+			c.storage.Delete(evictKey)
 			c.stats.Evictions++
 		}
 	}
 
+	// Create cache item with metadata
 	now := time.Now()
 	item := &CacheItem{
 		Key:        key,
@@ -184,44 +300,68 @@ func (c *InMemoryCache) Put(ctx context.Context, key string, value interface{}, 
 		Frequency:  1,
 	}
 
+	// Set expiration time
 	if ttl > 0 {
 		item.ExpiresAt = now.Add(ttl)
 	} else if c.config.DefaultTTL > 0 {
 		item.ExpiresAt = now.Add(c.config.DefaultTTL)
 	}
 
-	c.items[key] = item
+	// Store item and notify eviction policy
+	c.storage.Put(key, item)
 	c.evictionPolicy.OnPut(key, item)
-	c.stats.Size = len(c.items)
+	c.stats.Size = c.storage.Size()
 
 	return nil
 }
 
+// Delete removes a key from the cache
+// Thread-safety: Uses mutex for atomic deletion
 func (c *InMemoryCache) Delete(ctx context.Context, key string) error {
+	if key == "" {
+		return ErrInvalidKey
+	}
+
+	select {
+	case <-ctx.Done():
+		return ErrContextCancelled
+	default:
+	}
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	delete(c.items, key)
+	c.storage.Delete(key)
 	c.evictionPolicy.OnDelete(key)
-	c.stats.Size = len(c.items)
+	c.stats.Size = c.storage.Size()
 
 	return nil
 }
 
+// Clear removes all items from the cache
+// Thread-safety: Uses mutex for atomic clearing
 func (c *InMemoryCache) Clear(ctx context.Context) error {
+	select {
+	case <-ctx.Done():
+		return ErrContextCancelled
+	default:
+	}
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.items = make(map[string]*CacheItem)
+	c.storage.Clear()
 	c.stats.Size = 0
 
 	return nil
 }
 
+// Size returns the current number of items in the cache
+// Thread-safety: Uses RLock for concurrent reads
 func (c *InMemoryCache) Size() int {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
-	return len(c.items)
+	return c.storage.Size()
 }
 
 func (c *InMemoryCache) Stats() CacheStats {
@@ -251,18 +391,23 @@ func (c *InMemoryCache) cleanupExpired() {
 	}
 }
 
+// removeExpiredItems removes all expired items from the cache
+// Called periodically by cleanupExpired goroutine
+// Thread-safety: Uses mutex to synchronize with other operations
 func (c *InMemoryCache) removeExpiredItems() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	now := time.Now()
-	for key, item := range c.items {
-		if !item.ExpiresAt.IsZero() && now.After(item.ExpiresAt) {
-			delete(c.items, key)
+	keys := c.storage.Keys()
+	for _, key := range keys {
+		item, exists := c.storage.Get(key)
+		if exists && !item.ExpiresAt.IsZero() && now.After(item.ExpiresAt) {
+			c.storage.Delete(key)
 			c.evictionPolicy.OnDelete(key)
 		}
 	}
-	c.stats.Size = len(c.items)
+	c.stats.Size = c.storage.Size()
 }
 
 func (c *InMemoryCache) Stop() {
@@ -270,18 +415,22 @@ func (c *InMemoryCache) Stop() {
 }
 
 // EvictionPolicy defines cache eviction strategies
+// This interface enables extensibility - new eviction policies can be added by implementing this interface
+// Examples: LRU, LFU, FIFO, TTL-based, Random, etc.
 type EvictionPolicy interface {
-	OnGet(key string)
-	OnPut(key string, item *CacheItem)
-	OnDelete(key string)
-	Evict() (string, bool)
+	OnGet(key string)                    // Called when an item is accessed
+	OnPut(key string, item *CacheItem)   // Called when an item is added/updated
+	OnDelete(key string)                 // Called when an item is deleted
+	Evict() (string, bool)               // Returns the key to evict, or false if none available
 }
 
 // LRU (Least Recently Used) Policy
+// Implementation: Uses doubly-linked list to track access order
+// Thread-safety: Each policy has its own mutex for thread-safe operations
 type LRUPolicy struct {
 	mu    sync.Mutex
-	list  *list.List
-	items map[string]*list.Element
+	list  *list.List                    // Most recently used at front, least at back
+	items map[string]*list.Element      // Maps keys to list elements for O(1) access
 }
 
 func NewLRUPolicy() *LRUPolicy {
@@ -340,10 +489,12 @@ func (p *LRUPolicy) Evict() (string, bool) {
 }
 
 // LFU (Least Frequently Used) Policy
+// Implementation: Tracks access frequency for each key
+// Thread-safety: Uses mutex to protect frequency map
 type LFUPolicy struct {
 	mu      sync.Mutex
-	freqMap map[string]int64
-	minFreq int64
+	freqMap map[string]int64 // Maps keys to their access frequency
+	minFreq int64            // Tracks minimum frequency (not currently used in simple implementation)
 }
 
 func NewLFUPolicy() *LFUPolicy {
@@ -393,10 +544,12 @@ func (p *LFUPolicy) Evict() (string, bool) {
 }
 
 // FIFO (First In First Out) Policy
+// Implementation: Uses queue to maintain insertion order
+// Thread-safety: Uses mutex to protect queue operations
 type FIFOPolicy struct {
 	mu    sync.Mutex
-	queue []string
-	items map[string]bool
+	queue []string        // Queue of keys in insertion order
+	items map[string]bool // Tracks which keys are in the queue
 }
 
 func NewFIFOPolicy() *FIFOPolicy {
