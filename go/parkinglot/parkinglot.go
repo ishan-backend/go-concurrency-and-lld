@@ -57,11 +57,11 @@ type BaseVehicle struct {
 	VType VehicleType
 }
 
-func (v *BaseVehicle) GetPlate() string { return v.Plate }
+func (v *BaseVehicle) GetPlate() string     { return v.Plate }
 func (v *BaseVehicle) GetType() VehicleType { return v.VType }
 
 // Convenience constructors
-nfunc NewVehicle(plate string, vt VehicleType) Vehicle {
+func NewVehicle(plate string, vt VehicleType) Vehicle {
 	return &BaseVehicle{Plate: plate, VType: vt}
 }
 
@@ -118,17 +118,20 @@ type PaymentStrategy interface {
 // Implementations
 
 type CashPayment struct{}
+
 func (c CashPayment) Pay(amount float64) PaymentResult {
 	return PaymentResult{true, fmt.Sprintf("Paid cash: %.2f", amount)}
 }
 
 type CardPayment struct{ CardNumber string }
+
 func (c CardPayment) Pay(amount float64) PaymentResult {
 	// In real world this would call a gateway
 	return PaymentResult{true, fmt.Sprintf("Card %s charged: %.2f", c.CardNumber, amount)}
 }
 
 type MobilePayment struct{ Provider string }
+
 func (m MobilePayment) Pay(amount float64) PaymentResult {
 	return PaymentResult{true, fmt.Sprintf("Mobile (%s) charged: %.2f", m.Provider, amount)}
 }
@@ -252,13 +255,13 @@ type Gate struct {
 // -------------------- ParkingLot (Singleton) --------------------
 
 type ParkingLot struct {
-	Floors      map[string]*Floor
-	Entries     map[string]*Gate
-	Exits       map[string]*Gate
-	Tickets     map[string]*Ticket
-	muTickets   sync.RWMutex
-	muFloors    sync.RWMutex
-	rand        *rand.Rand
+	Floors    map[string]*Floor
+	Entries   map[string]*Gate
+	Exits     map[string]*Gate
+	Tickets   map[string]*Ticket
+	muTickets sync.RWMutex
+	muFloors  sync.RWMutex
+	rand      *rand.Rand
 }
 
 var (
@@ -286,7 +289,7 @@ func (pl *ParkingLot) AddFloor(f *Floor) {
 }
 
 func (pl *ParkingLot) AddEntry(g *Gate) { pl.Entries[g.ID] = g }
-func (pl *ParkingLot) AddExit(g *Gate) { pl.Exits[g.ID] = g }
+func (pl *ParkingLot) AddExit(g *Gate)  { pl.Exits[g.ID] = g }
 
 // Entry: issues ticket and assigns spot (search floors in order)
 func (pl *ParkingLot) Enter(plate string, vt VehicleType, entryGateID string) (*Ticket, error) {
@@ -318,7 +321,9 @@ func (pl *ParkingLot) Exit(ticketID string, payment PaymentStrategy) (PaymentRes
 	// simple fee calculation
 	dur := time.Since(t.EntryTime)
 	hours := dur.Hours()
-	if hours < 1 { hours = 1 }
+	if hours < 1 {
+		hours = 1
+	}
 	amount := 10.0 * hours // Rs 10 per hour (example)
 	res := payment.Pay(amount)
 	if res.Success {
@@ -368,7 +373,11 @@ func main() {
 
 	// Vehicles enter
 	t1, err := pl.Enter("MH12AB1111", Car, "E1")
-	if err != nil { fmt.Println("enter err:", err) } else { fmt.Println("Ticket issued:", t1) }
+	if err != nil {
+		fmt.Println("enter err:", err)
+	} else {
+		fmt.Println("Ticket issued:", t1)
+	}
 
 	t2, _ := pl.Enter("MH12AB2222", Motorcycle, "E2")
 	fmt.Println("Ticket issued:", t2)
