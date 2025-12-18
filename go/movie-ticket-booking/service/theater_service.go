@@ -24,7 +24,7 @@ func (s *TheaterServiceImpl) AddTheater(name, city, address string) (*models.The
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return theater, nil
 }
 
@@ -39,10 +39,10 @@ func (s *TheaterServiceImpl) AddScreen(theaterID int64, screenNum, totalRows, to
 	if err != nil {
 		return nil, err
 	}
-	
+
 	screen := models.NewScreen(theaterID, screenNum, totalRows, totalCols)
 	theater.AddScreen(screen)
-	
+
 	return screen, nil
 }
 
@@ -50,4 +50,3 @@ func (s *TheaterServiceImpl) AddScreen(theaterID int64, screenNum, totalRows, to
 func (s *TheaterServiceImpl) GetTheatersByCity(city string) []*models.Theater {
 	return s.theaterRepo.GetTheatersByCity(city)
 }
-

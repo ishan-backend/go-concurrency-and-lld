@@ -43,16 +43,16 @@ func (r *MovieRepositoryImpl) GetMovie(movieID int64) (*models.Movie, error) {
 func (r *MovieRepositoryImpl) SearchMoviesByTitle(title string) []*models.Movie {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	title = strings.ToLower(title)
 	var results []*models.Movie
-	
+
 	for _, movie := range r.movies {
 		if strings.Contains(strings.ToLower(movie.Title), title) {
 			results = append(results, movie)
 		}
 	}
-	
+
 	return results
 }
 
@@ -60,16 +60,16 @@ func (r *MovieRepositoryImpl) SearchMoviesByTitle(title string) []*models.Movie 
 func (r *MovieRepositoryImpl) SearchMoviesByGenre(genre string) []*models.Movie {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	genre = strings.ToLower(genre)
 	var results []*models.Movie
-	
+
 	for _, movie := range r.movies {
 		if strings.ToLower(movie.Genre) == genre {
 			results = append(results, movie)
 		}
 	}
-	
+
 	return results
 }
 
@@ -77,16 +77,16 @@ func (r *MovieRepositoryImpl) SearchMoviesByGenre(genre string) []*models.Movie 
 func (r *MovieRepositoryImpl) SearchMoviesByLanguage(language string) []*models.Movie {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	language = strings.ToLower(language)
 	var results []*models.Movie
-	
+
 	for _, movie := range r.movies {
 		if strings.ToLower(movie.Language) == language {
 			results = append(results, movie)
 		}
 	}
-	
+
 	return results
 }
 
@@ -94,12 +94,11 @@ func (r *MovieRepositoryImpl) SearchMoviesByLanguage(language string) []*models.
 func (r *MovieRepositoryImpl) GetAllMovies() []*models.Movie {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	movies := make([]*models.Movie, 0, len(r.movies))
 	for _, movie := range r.movies {
 		movies = append(movies, movie)
 	}
-	
+
 	return movies
 }
-

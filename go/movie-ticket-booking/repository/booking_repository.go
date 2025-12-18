@@ -42,14 +42,14 @@ func (r *BookingRepositoryImpl) GetBooking(bookingID int64) (*models.Booking, er
 func (r *BookingRepositoryImpl) GetBookingsByUser(userID int64) []*models.Booking {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	var results []*models.Booking
 	for _, booking := range r.bookings {
 		if booking.UserID == userID {
 			results = append(results, booking)
 		}
 	}
-	
+
 	return results
 }
 
@@ -57,14 +57,14 @@ func (r *BookingRepositoryImpl) GetBookingsByUser(userID int64) []*models.Bookin
 func (r *BookingRepositoryImpl) GetBookingsByShow(showID int64) []*models.Booking {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	var results []*models.Booking
 	for _, booking := range r.bookings {
 		if booking.ShowID == showID && !booking.IsCancelled() {
 			results = append(results, booking)
 		}
 	}
-	
+
 	return results
 }
 
@@ -75,4 +75,3 @@ func (r *BookingRepositoryImpl) UpdateBooking(booking *models.Booking) error {
 	r.bookings[booking.ID] = booking
 	return nil
 }
-

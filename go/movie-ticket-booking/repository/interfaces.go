@@ -38,4 +38,3 @@ type BookingRepository interface {
 	GetBookingsByShow(showID int64) []*models.Booking
 	UpdateBooking(booking *models.Booking) error
 }
-

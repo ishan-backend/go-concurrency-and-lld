@@ -34,4 +34,3 @@ type BookingService interface {
 	GetBooking(bookingID int64) (*models.Booking, error)
 	GetUserBookings(userID int64) []*models.Booking
 }
-

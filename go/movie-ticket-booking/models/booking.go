@@ -49,4 +49,3 @@ func (b *Booking) Cancel() {
 func (b *Booking) IsCancelled() bool {
 	return b.Status == BookingStatusCancelled
 }
-

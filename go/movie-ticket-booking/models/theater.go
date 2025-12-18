@@ -24,7 +24,7 @@ type Theater struct {
 func NewTheater(name, city, address string) *Theater {
 	theaterID := atomic.AddInt64(&theaterIDGenerator, 1)
 	return &Theater{
-		ID: theaterID,
+		ID:   theaterID,
 		Name: name,
 		Location: Location{
 			City:    city,
@@ -47,4 +47,3 @@ func (t *Theater) GetScreen(screenID int64) (*Screen, error) {
 	}
 	return screen, nil
 }
-

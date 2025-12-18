@@ -42,7 +42,7 @@ func (r *ShowRepositoryImpl) GetShow(showID int64) (*models.Show, error) {
 func (r *ShowRepositoryImpl) GetShowsByMovieAndCity(movieID int64, city string) []*models.Show {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	var results []*models.Show
 	for _, show := range r.shows {
 		if show.MovieID == movieID {
@@ -51,7 +51,7 @@ func (r *ShowRepositoryImpl) GetShowsByMovieAndCity(movieID int64, city string) 
 			results = append(results, show)
 		}
 	}
-	
+
 	return results
 }
 
@@ -59,14 +59,14 @@ func (r *ShowRepositoryImpl) GetShowsByMovieAndCity(movieID int64, city string) 
 func (r *ShowRepositoryImpl) GetShowsByTheater(theaterID int64) []*models.Show {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	var results []*models.Show
 	for _, show := range r.shows {
 		if show.TheaterID == theaterID {
 			results = append(results, show)
 		}
 	}
-	
+
 	return results
 }
 
@@ -74,14 +74,14 @@ func (r *ShowRepositoryImpl) GetShowsByTheater(theaterID int64) []*models.Show {
 func (r *ShowRepositoryImpl) GetShowsByScreen(screenID int64) []*models.Show {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	var results []*models.Show
 	for _, show := range r.shows {
 		if show.ScreenID == screenID {
 			results = append(results, show)
 		}
 	}
-	
+
 	return results
 }
 
@@ -89,12 +89,11 @@ func (r *ShowRepositoryImpl) GetShowsByScreen(screenID int64) []*models.Show {
 func (r *ShowRepositoryImpl) GetAllShows() []*models.Show {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	shows := make([]*models.Show, 0, len(r.shows))
 	for _, show := range r.shows {
 		shows = append(shows, show)
 	}
-	
+
 	return shows
 }
-

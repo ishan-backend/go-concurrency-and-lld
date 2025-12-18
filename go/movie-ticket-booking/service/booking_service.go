@@ -34,18 +34,18 @@ func (s *BookingServiceImpl) BookTickets(userID, showID int64, seatIDs []string)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Get theater and screen
 	theater, err := s.theaterRepo.GetTheater(show.TheaterID)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	screen, err := theater.GetScreen(show.ScreenID)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Get existing bookings for this show
 	existingBookings := s.bookingRepo.GetBookingsByShow(showID)
 	bookedSeats := make(map[string]bool)
@@ -54,7 +54,7 @@ func (s *BookingServiceImpl) BookTickets(userID, showID int64, seatIDs []string)
 			bookedSeats[seatID] = true
 		}
 	}
-	
+
 	// Validate and lock seats
 	var seatsToBook []*models.Seat
 	for _, seatID := range seatIDs {
@@ -63,31 +63,31 @@ func (s *BookingServiceImpl) BookTickets(userID, showID int64, seatIDs []string)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		seat, err := screen.GetSeat(row, col)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		// Check if seat is already booked
 		if bookedSeats[seatID] {
 			return nil, models.ErrSeatAlreadyBooked
 		}
-		
+
 		// Try to lock the seat
 		if !seat.Lock(userID, SeatLockDuration) {
 			return nil, models.ErrSeatNotAvailable
 		}
-		
+
 		seatsToBook = append(seatsToBook, seat)
 	}
-	
+
 	// Calculate total amount
 	totalAmount := s.calculateTotalAmount(show, seatsToBook)
-	
+
 	// Create booking
 	booking := models.NewBooking(userID, showID, seatIDs, totalAmount)
-	
+
 	// Book all seats
 	for _, seat := range seatsToBook {
 		if !seat.Book(userID) {
@@ -98,7 +98,7 @@ func (s *BookingServiceImpl) BookTickets(userID, showID int64, seatIDs []string)
 			return nil, models.ErrSeatNotAvailable
 		}
 	}
-	
+
 	// Save booking
 	err = s.bookingRepo.AddBooking(booking)
 	if err != nil {
@@ -108,7 +108,7 @@ func (s *BookingServiceImpl) BookTickets(userID, showID int64, seatIDs []string)
 		}
 		return nil, err
 	}
-	
+
 	return booking, nil
 }
 
@@ -118,43 +118,43 @@ func (s *BookingServiceImpl) CancelBooking(bookingID int64) error {
 	if err != nil {
 		return err
 	}
-	
+
 	if booking.IsCancelled() {
 		return models.ErrBookingAlreadyCancelled
 	}
-	
+
 	// Get show and screen to unlock seats
 	show, err := s.showRepo.GetShow(booking.ShowID)
 	if err != nil {
 		return err
 	}
-	
+
 	theater, err := s.theaterRepo.GetTheater(show.TheaterID)
 	if err != nil {
 		return err
 	}
-	
+
 	screen, err := theater.GetScreen(show.ScreenID)
 	if err != nil {
 		return err
 	}
-	
+
 	// Unlock/booked seats (mark as available)
 	for _, seatID := range booking.SeatIDs {
 		row, col, err := parseSeatID(seatID)
 		if err != nil {
 			continue
 		}
-		
+
 		seat, err := screen.GetSeat(row, col)
 		if err != nil {
 			continue
 		}
-		
+
 		// Release the seat (reset status to available)
 		seat.Release()
 	}
-	
+
 	// Cancel booking
 	booking.Cancel()
 	return s.bookingRepo.UpdateBooking(booking)
@@ -174,7 +174,7 @@ func (s *BookingServiceImpl) GetUserBookings(userID int64) []*models.Booking {
 func (s *BookingServiceImpl) calculateTotalAmount(show *models.Show, seats []*models.Seat) float64 {
 	basePrice := show.Price
 	totalAmount := 0.0
-	
+
 	for _, seat := range seats {
 		price := basePrice
 		// Apply multipliers based on seat type
@@ -186,7 +186,7 @@ func (s *BookingServiceImpl) calculateTotalAmount(show *models.Show, seats []*mo
 		}
 		totalAmount += price
 	}
-	
+
 	return totalAmount
 }
 
@@ -195,10 +195,10 @@ func parseSeatID(seatID string) (int, int, error) {
 	if len(seatID) < 2 {
 		return 0, 0, models.ErrInvalidSeatPosition
 	}
-	
+
 	rowLetter := seatID[0]
 	row := int(rowLetter - 'A')
-	
+
 	colStr := seatID[1:]
 	col := 0
 	for _, ch := range colStr {
@@ -208,7 +208,6 @@ func parseSeatID(seatID string) (int, int, error) {
 		col = col*10 + int(ch-'0')
 	}
 	col-- // Convert to 0-based index
-	
+
 	return row, col, nil
 }
-

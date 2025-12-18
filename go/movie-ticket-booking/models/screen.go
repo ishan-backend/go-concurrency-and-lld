@@ -28,7 +28,7 @@ type Screen struct {
 // NewScreen creates a new Screen instance
 func NewScreen(theaterID int64, screenNum, totalRows, totalCols int) *Screen {
 	screenID := atomic.AddInt64(&screenIDGenerator, 1)
-	
+
 	// Initialize seat layout
 	seatLayout := make([][]*Seat, totalRows)
 	for i := 0; i < totalRows; i++ {
@@ -41,11 +41,11 @@ func NewScreen(theaterID int64, screenNum, totalRows, totalCols int) *Screen {
 			} else if i < 5 {
 				seatType = SeatTypePremium
 			}
-			
+
 			seatLayout[i][j] = NewSeat(screenID, i, j, seatType)
 		}
 	}
-	
+
 	return &Screen{
 		ID:         screenID,
 		TheaterID:  theaterID,
@@ -63,4 +63,3 @@ func (s *Screen) GetSeat(row, col int) (*Seat, error) {
 	}
 	return s.SeatLayout[row][col], nil
 }
-

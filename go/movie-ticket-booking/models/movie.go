@@ -11,7 +11,7 @@ var movieIDGenerator int64 = 0
 type Movie struct {
 	ID          int64
 	Title       string
-	Duration    int       // Duration in minutes
+	Duration    int // Duration in minutes
 	Genre       string
 	Language    string
 	ReleaseDate time.Time
@@ -29,4 +29,3 @@ func NewMovie(title string, duration int, genre, language string, releaseDate ti
 		ReleaseDate: releaseDate,
 	}
 }
-

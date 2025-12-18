@@ -25,13 +25,13 @@ func (s *MovieServiceImpl) AddMovie(title string, duration int, genre, language 
 	if err != nil {
 		return nil, err
 	}
-	
+
 	movie := models.NewMovie(title, duration, genre, language, date)
 	err = s.movieRepo.AddMovie(movie)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return movie, nil
 }
 
@@ -54,4 +54,3 @@ func (s *MovieServiceImpl) SearchMoviesByGenre(genre string) []*models.Movie {
 func (s *MovieServiceImpl) SearchMoviesByLanguage(language string) []*models.Movie {
 	return s.movieRepo.SearchMoviesByLanguage(language)
 }
-

@@ -42,14 +42,14 @@ func (r *TheaterRepositoryImpl) GetTheater(theaterID int64) (*models.Theater, er
 func (r *TheaterRepositoryImpl) GetTheatersByCity(city string) []*models.Theater {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	var results []*models.Theater
 	for _, theater := range r.theaters {
 		if theater.Location.City == city {
 			results = append(results, theater)
 		}
 	}
-	
+
 	return results
 }
 
@@ -57,12 +57,11 @@ func (r *TheaterRepositoryImpl) GetTheatersByCity(city string) []*models.Theater
 func (r *TheaterRepositoryImpl) GetAllTheaters() []*models.Theater {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	
+
 	theaters := make([]*models.Theater, 0, len(r.theaters))
 	for _, theater := range r.theaters {
 		theaters = append(theaters, theater)
 	}
-	
+
 	return theaters
 }
-

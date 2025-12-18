@@ -39,4 +39,3 @@ func (s *Show) GetShowDate() time.Time {
 func (s *Show) GetShowTimeOnly() string {
 	return s.ShowTime.Format("15:04")
 }
-
