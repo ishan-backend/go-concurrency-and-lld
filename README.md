@@ -1,4 +1,4 @@
-# LowLevelDesign
+# LowLevelDesign by Kousiknath
 Various Low-Level Object-Oriented System Design problems are discussed in this space.
 
 ## Already Implemented
@@ -64,3 +64,12 @@ Various Low-Level Object-Oriented System Design problems are discussed in this s
 28. Hotel Inventory Booking System
 29. JIRA Board
 30. 
+
+How to push to local branch?
+- git remote -v
+- git remote rename origin upstream
+- git remote add origin https://github.com/ishan-backend/go-concurrency-and-lld.git https://github.com/YOUR_USERNAME/REPO_NAME.git
+- git push -u origin YOUR_BRANCH_NAME
+- git fetch upstream
+- git checkout main
+- git merge upstream/main
