@@ -4,6 +4,7 @@
 
 | Concurrency Patten | Use-Cases | Articles/Videos       |
 |--------------------|-----------|-----------------------|
+| | | | 
 
 
 ## Design Patterns
